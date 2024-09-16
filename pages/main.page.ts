@@ -33,6 +33,8 @@ export class MainPage {
     readonly emailLink: Locator;
     readonly copyRight: Locator;
 
+    private readonly enterButton: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.servicesHeader = this.page.getByRole("heading", { name: "Послуги" });
@@ -52,9 +54,9 @@ export class MainPage {
         this.privacyPolicy = this.footer.getByRole("link", { name: "Політика конфіденційності" });
         this.cookiePolicy = this.footer.getByRole("link", { name: "Правила використання файлів cookie" });
         this.termsConditions = this.footer.getByRole("link", { name: "Умови доступу та користування" });
-        this.productLink = this.footer.getByTestId("ogoloshennya").filter({ hasText: "Оголошення" });
-        this.tendersLink = this.footer.getByTestId('tenderi').getByRole('link', { name: 'Тендери' });
-        this.requestsLink = this.footer.getByTestId("zapiti-na-robotu").filter({ hasText: "Запити на роботу" });
+        this.productLink = this.footer.getByRole("link", { name: "Оголошення" });
+        this.tendersLink = this.footer.getByRole("link", { name: "Тендери" });
+        this.requestsLink = this.footer.getByRole("link", { name: "Запити на роботу" });
         this.emailLink = this.footer.locator("[href^=\"mailto:\"]");
         this.copyRight = this.footer.getByTestId("copyright").filter({ hasText: "© 2023 Rentzila. Усі права захищені" });
 
@@ -64,6 +66,12 @@ export class MainPage {
         this.phoneNumberInput = this.page.getByRole("textbox", { name: "Номер телефону" });
         this.nameInputErrorMessage = this.page.locator("[class*=\"ConsultationForm_error_message\"]").first();
         this.phoneNumberInputErrorMessage = this.page.locator("[class*=\"ConsultationForm_error_message\"]").last();
+
+        this.enterButton = this.page.locator("[class*=\"NavbarAuthBlock_buttonEnter\"]");
+    }
+
+    async clickEnterButton(): Promise<void> {
+        await this.enterButton.click();
     }
 
     async open(): Promise<void> {

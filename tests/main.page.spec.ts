@@ -4,18 +4,24 @@ import { ProductsPage } from '../pages/products.page.ts';
 import { UnitPage } from '../pages/unit.page.ts';
 import { faker } from "@faker-js/faker";
 import { AuthAPI } from '../utils/auth.api.ts';
+import { LoginPage } from '../pages/login.page.ts';
 
 test.describe("Main page", () => {
     let mainPage: MainPage;
     let productsPage: ProductsPage;
     let unitPage: UnitPage;
+    let loginPage: LoginPage;
     let request: APIRequestContext;
 
     test.beforeEach(async ({ page }) => {
         mainPage = new MainPage(page);
         productsPage = new ProductsPage(page);
         unitPage = new UnitPage(page);
+        loginPage = new LoginPage(page);
         await mainPage.open();
+
+        await mainPage.clickEnterButton();
+        await loginPage.login();
     });
 
     test("Checking \"Послуги\" section on the main page", async ({ page }) => {
@@ -28,9 +34,9 @@ test.describe("Main page", () => {
             for (const propose of proposes) {
                 await mainPage.isOpen();
                 await category.click();
-                const proposeText: string = await propose.innerText();
                 await page.waitForLoadState();
                 await propose.waitFor({ state: "visible" });
+                const proposeText: string = await propose.innerText();
                 await propose.click();
                 await productsPage.isOpen();
                 await page.waitForLoadState();

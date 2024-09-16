@@ -12,7 +12,7 @@ export class ProductsPage {
     constructor(page: Page) {
         this.page = page;
         this.unitList = this.page.locator("[class*=\"MapPagination_units_container\"]").getByTestId("cardWrapper");
-        this.servicesExpandButton = this.page.locator('div').filter({ hasText: /^Послуги$/ }).locator('circle');
+        this.servicesExpandButton = this.page.getByTestId("filterCaption").last();
         this.checkboxListExpandButtons = this.page.getByTestId('rightArrow');
         this.filterContainer = this.page.locator("[class*=\"ResetFilters_container__\"]");
         this.selectedFilters = this.filterContainer.locator("[class*=\"ResetFilters_selectedCategory___\"]");
