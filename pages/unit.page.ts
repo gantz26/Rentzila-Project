@@ -27,35 +27,25 @@ export class UnitPage {
     async containsCharacteristicForEquipment(characteristic: string): Promise<void> {
         await this.characteristicsEquipment.waitFor({ state: "visible" });
         await expect(this.characteristicsEquipment).toContainText("Основні характеристики");
-        if (characteristic === "Сівалки") {
-            await expect(this.characteristicsEquipment).toContainText("посівні комплекси");
-        }
-        else if (characteristic === "Трактори") {
-            await expect(this.characteristicsEquipment).toContainText("трактори колісні");
-        }
-        else if (characteristic === "Обприскувачі") {
-            await expect(this.characteristicsEquipment).toContainText("обприскувачі самохідні");
-        }
-        else if (characteristic === "Навантажувачі") {
-            await expect(this.characteristicsEquipment).toContainText("навантажувачі телескопічні");
-        }
-        else if (characteristic === "Комунальні машини") {
-            await expect(this.characteristicsEquipment).toContainText("асенізатори");
-        }
-        else if (characteristic === "Комбайни") {
-            await expect(this.characteristicsEquipment).toContainText("інші комбайни");
-        }
-        else if (characteristic === "Дрони") {
-            await expect(this.characteristicsEquipment).toContainText("агродрони");
-        }
-        else if (characteristic === "Катки") {
-            await expect(this.characteristicsEquipment).toContainText("дорожні катки");
-        }
-        else if (characteristic === "Вантажівки") {
-            await expect(this.characteristicsEquipment).toContainText("лісовози");
-        }
-        else if (characteristic === "Техніка для складування") {
-            await expect(this.characteristicsEquipment).toContainText("вилкові навантажувач");
+
+        const characteristicMap = new Map<string, string>([
+            ["Сівалки", "посівні комплекси"],
+            ["Трактори", "трактори колісні"],
+            ["Екскаватори", "гусеничні екскаватори"],
+            ["Обприскувачі", "обприскувачі самохідні"],
+            ["Навантажувачі", "навантажувачі телескопічні"],
+            ["Комунальні машини", "асенізатори"],
+            ["Комбайни", "інші комбайни"],
+            ["Дрони", "агродрони"],
+            ["Катки", "дорожні катки"],
+            ["Вантажівки", "лісовози"],
+            ["Техніка для складування", "вилкові навантажувач"],
+            ["Aвтокрани", "гусеничні екскаватори"]
+        ]);
+
+        if (characteristicMap.has(characteristic)) {
+            const expectedText = characteristicMap.get(characteristic) || "undefined";
+            await expect(this.characteristicsEquipment).toContainText(expectedText);
         }
         else {
             await expect(this.characteristicsEquipment).toContainText(characteristic);

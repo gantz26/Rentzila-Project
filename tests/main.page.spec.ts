@@ -39,12 +39,9 @@ test.describe("Main page", () => {
                 const proposeText: string = await propose.innerText();
                 await propose.click();
                 await productsPage.isOpen();
-                await page.waitForLoadState();
                 await productsPage.expandCheckboxLists();
-                if (proposeText !== "FCHCHFCFB") {
-                    await expect(await productsPage.getCheckboxByName(proposeText)).toBeChecked();
-                    await expect(await productsPage.findFilterForServices(proposeText)).toBeTruthy();
-                }
+                await expect(await productsPage.getCheckboxByName(proposeText)).toBeChecked();
+                await expect(await productsPage.findFilterForServices(proposeText)).toBeTruthy();
                 const units = await productsPage.getUnitList();
                 if (!(await productsPage.isUnitListEmpty(units))) {
                     for (const unit of units) {

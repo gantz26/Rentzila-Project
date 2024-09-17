@@ -8,6 +8,7 @@ export class ProductsPage {
     private readonly filterContainer: Locator;
     private readonly selectedFilters: Locator;
     private readonly unitCount: Locator;
+    private readonly serviceWrapper: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -17,6 +18,7 @@ export class ProductsPage {
         this.filterContainer = this.page.locator("[class*=\"ResetFilters_container__\"]");
         this.selectedFilters = this.filterContainer.locator("[class*=\"ResetFilters_selectedCategory___\"]");
         this.unitCount = this.page.locator("h1[class*=\"MapPagination_count\"]");
+        this.serviceWrapper = this.page.locator("div[class*=\"Services_wrapper__KYGgx\"]");
     }
 
     async isOpen(): Promise<void> {
@@ -26,18 +28,16 @@ export class ProductsPage {
     async expandCheckboxLists(): Promise<void> {
         await this.servicesExpandButton.waitFor({ state: "visible" });
         const attributes: null | string = await this.servicesExpandButton.getAttribute("class");
-        const classes: undefined | string[] = attributes?.split(" ");
-        if (classes && classes.some(cls => cls.startsWith("FilterCaption_rotate__"))) {
+        if (attributes?.includes("FilterCaption_rotate")) {
             await this.servicesExpandButton.click();
         }
+        await this.serviceWrapper.waitFor({ state: "visible" });
 
-        await this.page.waitForTimeout(1000);
         const arrowButtons = await this.checkboxListExpandButtons.all();
         for (const button of arrowButtons) {
             await button.waitFor({ state: "visible" });
             const buttonAttributes: null | string = await button.getAttribute("class");
-            const buttonClasses: undefined | string[] = buttonAttributes?.split(" ");
-            if (buttonClasses && !buttonClasses.some(cls => cls.startsWith("ServiceCategory_clicked__"))) {
+            if (!buttonAttributes?.includes("ServiceCategory_clicked")) {
                 await button.click();
             }
         }
@@ -72,37 +72,29 @@ export class ProductsPage {
     async findFilterForEquipments(title: string): Promise<boolean> {
         await this.filterContainer.waitFor({ state: "visible" });
         const filters = await this.getSelectedFilters();
+
+        const titleFilterMap = new Map<string, string>([
+            ["Сівалки", "Посівна та садильна техніка"],
+            ["Обприскувачі", "Техніка для поливу та зрошення"],
+            ["Дрони", "Інша сільгосптехніка"],
+            ["Дорожня техніка", "Дорожньо-прибиральна техніка"],
+            ["Комунальна техніка", "інша комунальна техніка"],
+            ["Вантажівки", "Техніка для транспортування"],
+            ["Аварійна техніка", "Аварійні машини"],
+            ["Прибиральна техніка", "Клінінгове обладнання"]
+        ]);
+
         for (const filter of filters) {
             await filter.waitFor({ state: "visible" });
-            const filetName = await filter.innerText();
-            if (title === "Сівалки") {
-                return filetName.includes("Посівна та садильна техніка");
-            }
-            else if (title === "Обприскувачі") {
-                return filetName.includes("Техніка для поливу та зрошення");
-            }
-            else if (title === "Дрони") {
-                return filetName.includes("Інша сільгосптехніка");
-            }
-            else if (title === "Дорожня техніка") {
-                return filetName.includes("Дорожньо-прибиральна техніка");
-            }
-            else if (title === "Комунальна техніка") {
-                return filetName.includes("інша комунальна техніка");
-            }
-            else if (title === "Вантажівки") {
-                return filetName.includes("Техніка для транспортування");
-            }
-            else if (title === "Аварійна техніка") {
-                return filetName.includes("Аварійні машини");
-            }
-            else if (title === "Прибиральна техніка") {
-                return filetName.includes("Клінінгове обладнання");
-            }
-            else if (title === "Складська техніка" || title === "Aвтокрани") {
-                return true;
-            }
-            else if (filetName.includes(title)) {
+            const filterName = await filter.innerText();
+
+            if (titleFilterMap.has(title)) {
+                const expectedFilter = titleFilterMap.get(title) || "undefined";
+                if (filterName.includes(expectedFilter)) {
+                    return true;
+                }
+            } 
+            else if (filterName.includes(title)) {
                 return true;
             }
         }
