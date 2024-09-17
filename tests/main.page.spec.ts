@@ -20,8 +20,9 @@ test.describe("Main page", () => {
         loginPage = new LoginPage(page);
         await mainPage.open();
 
-        await mainPage.clickEnterButton();
+        await loginPage.clickEnterButton();
         await loginPage.login();
+        await loginPage.waitForAuthorizationFormIsHidden();
     });
 
     test("Checking \"Послуги\" section on the main page", async ({ page }) => {

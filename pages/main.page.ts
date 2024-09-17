@@ -33,8 +33,6 @@ export class MainPage {
     readonly emailLink: Locator;
     readonly copyRight: Locator;
 
-    private readonly enterButton: Locator;
-
     constructor(page: Page) {
         this.page = page;
         this.servicesHeader = this.page.getByRole("heading", { name: "Послуги" });
@@ -66,12 +64,6 @@ export class MainPage {
         this.phoneNumberInput = this.page.getByRole("textbox", { name: "Номер телефону" });
         this.nameInputErrorMessage = this.page.locator("[class*=\"ConsultationForm_error_message\"]").first();
         this.phoneNumberInputErrorMessage = this.page.locator("[class*=\"ConsultationForm_error_message\"]").last();
-
-        this.enterButton = this.page.locator("[class*=\"NavbarAuthBlock_buttonEnter\"]");
-    }
-
-    async clickEnterButton(): Promise<void> {
-        await this.enterButton.click();
     }
 
     async open(): Promise<void> {
