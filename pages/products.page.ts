@@ -2,38 +2,62 @@ import { Locator, Page } from "@playwright/test";
 
 export class ProductsPage {
     private readonly page: Page;
-    private readonly unitList: Locator;
-    private readonly servicesExpandButton: Locator;
-    private readonly checkboxListExpandButtons: Locator;
-    private readonly filterContainer: Locator;
-    private readonly selectedFilters: Locator;
-    private readonly unitCount: Locator;
-    private readonly serviceWrapper: Locator;
 
     constructor(page: Page) {
         this.page = page;
-        this.unitList = this.page.locator("[class*=\"MapPagination_units_container\"]").getByTestId("cardWrapper");
-        this.servicesExpandButton = this.page.getByTestId("filterCaption").last();
-        this.checkboxListExpandButtons = this.page.getByTestId('rightArrow');
-        this.filterContainer = this.page.locator("[class*=\"ResetFilters_container__\"]");
-        this.selectedFilters = this.filterContainer.locator("[class*=\"ResetFilters_selectedCategory___\"]");
-        this.unitCount = this.page.locator("h1[class*=\"MapPagination_count\"]");
-        this.serviceWrapper = this.page.locator("div[class*=\"Services_wrapper__KYGgx\"]");
     }
 
     async isOpen(): Promise<void> {
         await this.page.waitForURL("**/products/**", { waitUntil: "load" });
     }
 
-    async expandCheckboxLists(): Promise<void> {
-        await this.servicesExpandButton.waitFor({ state: "visible" });
-        const attributes: null | string = await this.servicesExpandButton.getAttribute("class");
-        if (attributes?.includes("FilterCaption_rotate")) {
-            await this.servicesExpandButton.click();
-        }
-        await this.serviceWrapper.waitFor({ state: "visible" });
+    getUnitCount(): Locator {
+        return this.page.locator("h1[class*=\"MapPagination_count\"]");
+    }
 
-        const arrowButtons = await this.checkboxListExpandButtons.all();
+    getCheckboxByName(checkboxName: string): Locator {
+        return this.page.getByRole("checkbox", { name: checkboxName });
+    }
+
+    getServicesExpandButton(): Locator {
+        return this.page.getByTestId("filterCaption").last();
+    }
+
+    getFilterContainer(): Locator {
+        return this.page.locator("[class*=\"ResetFilters_container\"]");
+    }
+
+    getServiceWrapper(): Locator {
+        return this.page.locator("div[class*=\"Services_wrapper\"]");
+    }
+
+    async getSelectedFilters(): Promise<Locator[]> {
+        return await this.getFilterContainer().locator("[class*=\"ResetFilters_selectedCategory\"]").all();
+    }
+
+    async getCheckboxListExpandButtons(): Promise<Locator[]> {
+        return await this.page.getByTestId('rightArrow').all();
+    }
+
+    async getUnitList(): Promise<Locator[]> {
+        await this.getUnitCount().waitFor({ state: "visible" });
+        await this.page.waitForTimeout(1000);
+        return await this.page.locator("[class*=\"MapPagination_units_container\"]").getByTestId("cardWrapper").all();
+    }
+
+    async getUnitTitle(unit: Locator): Promise<string> {
+        return await unit.locator("[class*=\"UnitCard_title\"]").innerText();
+    }
+
+    async expandCheckboxLists(): Promise<void> {
+        await this.getServicesExpandButton().waitFor({ state: "visible" });
+        const attributes: null | string = await this.getServicesExpandButton().getAttribute("class");
+        if (attributes?.includes("FilterCaption_rotate")) {
+            await this.getServicesExpandButton().click();
+        }
+        await this.getServiceWrapper().waitFor({ state: "visible" });
+
+        const arrowButtons = await this.getCheckboxListExpandButtons();
         for (const button of arrowButtons) {
             await button.waitFor({ state: "visible" });
             const buttonAttributes: null | string = await button.getAttribute("class");
@@ -43,22 +67,12 @@ export class ProductsPage {
         }
     }
 
-    async getUnitList(): Promise<Locator[]> {
-        await this.unitCount.waitFor({ state: "visible" });
-        await this.page.waitForTimeout(1000);
-        return await this.unitList.all();
-    }
-
     async isUnitListEmpty(list: Locator[]): Promise<boolean> {
-        return list.length === 0 && (await this.unitCount.innerText()).includes("Знайдено 0 оголошень на видимій території");
-    }
-
-    async getSelectedFilters(): Promise<Locator[]> {
-        return await this.selectedFilters.all();
+        return list.length === 0 && (await this.getUnitCount().innerText()).includes("Знайдено 0 оголошень на видимій території");
     }
 
     async findFilterForServices(title: string): Promise<boolean> {
-        await this.filterContainer.waitFor({ state: "visible" });
+        await this.getFilterContainer().waitFor({ state: "visible" });
         const filters = await this.getSelectedFilters();
         for (const filter of filters) {
             await filter.waitFor({ state: "visible" });
@@ -70,7 +84,7 @@ export class ProductsPage {
     }
 
     async findFilterForEquipments(title: string): Promise<boolean> {
-        await this.filterContainer.waitFor({ state: "visible" });
+        await this.getFilterContainer().waitFor({ state: "visible" });
         const filters = await this.getSelectedFilters();
 
         const titleFilterMap = new Map<string, string>([
@@ -99,13 +113,5 @@ export class ProductsPage {
             }
         }
         return false;
-    }
-
-    async getUnitTitle(unit: Locator): Promise<string> {
-        return await unit.locator("[class*=\"UnitCard_title\"]").innerText();
-    }
-
-    async getCheckboxByName(checkboxName: string): Promise<Locator> {
-        return await this.page.getByRole("checkbox", { name: checkboxName });
     }
 }

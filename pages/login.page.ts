@@ -2,158 +2,133 @@ import { Locator, Page, expect } from "@playwright/test";
 
 export class LoginPage {
     private readonly page: Page;
-    private readonly emailInput: Locator;
-    private readonly passwordInput: Locator;
-    private readonly loginButton: Locator;
-    private readonly authorizationContainer: Locator;
-    private readonly emailErrorMessage: Locator;
-    private readonly passwordErrorMessage: Locator;
-    private readonly hiddenPasswordIcon: Locator;
-    private readonly profileIcon: Locator;
-    private readonly profileDropdownMenu: Locator;
-    private readonly profileDropdownMenuEmail: Locator;
-    private readonly profileDropdownMenuLogout: Locator;
-    private readonly profileDropdownMenuMyProfile: Locator;
-    private readonly enterButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
-        this.emailInput = this.page.getByRole("textbox", { name: "E-mail або номер телефону" });
-        this.passwordInput = this.page.getByRole("textbox", { name: "Пароль" });
-        this.loginButton = this.page.getByRole("button", { name: "Увійти" }).first();
-        this.authorizationContainer = this.page.getByTestId("authorizationContainer");
-        this.emailErrorMessage = this.page.locator("[class*=\"CustomReactHookInput_error_message\"]").first();
-        this.passwordErrorMessage = this.page.locator("[class*=\"CustomReactHookInput_error_message\"]").last();
-        this.hiddenPasswordIcon = this.page.getByTestId("reactHookButton");
-        this.profileIcon = this.page.getByTestId("avatarBlock");
-        this.profileDropdownMenu = this.page.locator("[class*=\"ProfileDropdownMenu_container\"]");
-        this.profileDropdownMenuEmail = this.profileDropdownMenu.getByTestId("email");
-        this.profileDropdownMenuLogout = this.profileDropdownMenu.getByTestId("logout");
-        this.profileDropdownMenuMyProfile = this.profileDropdownMenu.getByTestId("profile");
-        this.enterButton = this.page.locator("[class*=\"NavbarAuthBlock_buttonEnter\"]");
     }
     
-    async getAuthorizationForm(): Promise<Locator> {
-        return this.authorizationContainer;
+    getAuthorizationForm(): Locator {
+        return this.page.getByTestId("authorizationContainer");
     }
 
-    async getEnterButton(): Promise<Locator> {
-        return this.enterButton;
+    getErrorMessage(): Locator {
+        return this.page.getByTestId("errorMessage");
     }
 
-    async getProfileDropdownMenu(): Promise<Locator> {
-        return this.profileDropdownMenu;
+    getEnterButton(): Locator {
+        return this.page.locator("[class*=\"NavbarAuthBlock_buttonEnter\"]");
     }
 
-    async getProfileDropdownMenuEmail(): Promise<Locator> {
-        return this.profileDropdownMenuEmail;
+    getProfileDropdownMenu(): Locator {
+        return this.page.locator("[class*=\"ProfileDropdownMenu_container\"]");
     }
 
-    async getProfileIcon(): Promise<Locator> {
-        return this.profileIcon;
+    getProfileDropdownMenuMyProfile(): Locator {
+        return this.getProfileDropdownMenu().getByTestId("profile");
     }
 
-    async getEmailInput(): Promise<Locator> {
-        return this.emailInput;
+    getProfileDropdownMenuLogout(): Locator {
+        return this.getProfileDropdownMenu().getByTestId("logout");
     }
 
-    async getPasswordInput(): Promise<Locator> {
-        return this.passwordInput;
+    getProfileDropdownMenuEmail(): Locator {
+        return this.getProfileDropdownMenu().getByTestId("email");
     }
 
-    async getEmailMessageError(): Promise<Locator> {
-        return this.emailErrorMessage;
+    getProfileIcon(): Locator {
+        return this.page.getByTestId("avatarBlock");
     }
 
-    async getPasswordMessageError(): Promise<Locator> {
-        return this.passwordErrorMessage;
+    getEmailInput(): Locator {
+        return this.page.getByRole("textbox", { name: "E-mail або номер телефону" });
+    }
+
+    getPasswordInput(): Locator {
+        return this.page.getByRole("textbox", { name: "Пароль" });
+    }
+
+    getLoginButton(): Locator {
+        return this.page.getByRole("button", { name: "Увійти" }).first();
+    }
+
+    getEmailMessageError(): Locator {
+        return this.page.locator("[class*=\"CustomReactHookInput_error_message\"]").first();
+    }
+
+    getPasswordMessageError(): Locator {
+        return this.page.locator("[class*=\"CustomReactHookInput_error_message\"]").last();
+    }
+
+    getHiddenPasswordIcon(): Locator {
+        return this.page.getByTestId("reactHookButton");
     }
 
     async fillEmailInput(email: string | undefined): Promise<void> {
-        await this.emailInput.fill(email || "email");
+        await this.getEmailInput().fill(email || "email");
     }
 
     async clearEmailInput(): Promise<void> {
-        await this.emailInput.clear();
+        await this.getEmailInput().clear();
     }
 
     async fillPasswordInput(password: string | undefined): Promise<void> {
-        await this.passwordInput.fill(password || "password");
+        await this.getPasswordInput().fill(password || "password");
     }
 
     async clickEnterButton(): Promise<void> {
-        await this.enterButton.click();
+        await this.getEnterButton().click();
     }
 
-    async clickLoginbutton(): Promise<void> {
-        await this.loginButton.click();
+    async clickLoginButton(): Promise<void> {
+        await this.getLoginButton().click();
     }
 
     async clickLogout(): Promise<void> {
-        await this.profileDropdownMenuLogout.click();
+        await this.getProfileDropdownMenuLogout().click();
     }
 
     async clickMyProfile(): Promise<void> {
-        await this.profileDropdownMenuMyProfile.click();
+        await this.getProfileDropdownMenuMyProfile().click();
     }
 
     async clickProfileIcon(): Promise<void> {
-        await this.profileIcon.click();
+        await this.getProfileIcon().click();
     }
 
-    async clickHiddenPasswprdIcon(): Promise<void> {
-        await this.hiddenPasswordIcon.click();
+    async clickHiddenPasswordIcon(): Promise<void> {
+        await this.getHiddenPasswordIcon().click();
     }
 
     async pressEnter(): Promise<void> {
-        await this.passwordInput.press("Enter");
+        await this.getPasswordInput().press("Enter");
     }
 
     async isPasswordHidden(): Promise<boolean> {
-        return await this.passwordInput.getAttribute("type") === "password";
+        return await this.getPasswordInput().getAttribute("type") === "password";
     }
 
     async isPasswordVisible(): Promise<boolean> {
-        return await this.passwordInput.getAttribute("type") === "text";
-    }
-
-    async login(email: string | undefined = process.env.USER_EMAIL,
-                password: string| undefined = process.env.USER_PASSWORD): Promise<void> {
-        await this.fillEmailInput(email || "email");
-        await this.fillPasswordInput(password || "password");
-        await this.clickLoginbutton();
+        return await this.getPasswordInput().getAttribute("type") === "text";
     }
 
     async waitForAuthorizationFormIsHidden(): Promise<void> {
-        await this.authorizationContainer.waitFor({ state: "hidden" });
-        await this.page.waitForLoadState();
+        await this.page.waitForLoadState("networkidle");
+        await this.getAuthorizationForm().waitFor({ state: "hidden" });
     }
 
     async emailInputIsHighlighted(): Promise<void> {
-        await expect(this.emailInput).toHaveCSS("border-top-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).toHaveCSS("border-right-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).toHaveCSS("border-left-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).toHaveCSS("border-bottom-color", "rgb(247, 56, 89)");
+        await expect(this.getEmailInput()).toHaveCSS("border-color", "rgb(247, 56, 89)");
     }
 
     async passwordInputIsHighlighted(): Promise<void> {
-        await expect(this.passwordInput).toHaveCSS("border-top-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).toHaveCSS("border-right-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).toHaveCSS("border-left-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).toHaveCSS("border-bottom-color", "rgb(247, 56, 89)");
+        await expect(this.getPasswordInput()).toHaveCSS("border-color", "rgb(247, 56, 89)");
     }
 
     async emailInputIsNotHighlighted(): Promise<void> {
-        await expect(this.emailInput).not.toHaveCSS("border-top-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).not.toHaveCSS("border-right-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).not.toHaveCSS("border-left-color", "rgb(247, 56, 89)");
-        await expect(this.emailInput).not.toHaveCSS("border-bottom-color", "rgb(247, 56, 89)");
+        await expect(this.getEmailInput()).not.toHaveCSS("border-color", "rgb(247, 56, 89)");
     }
 
     async passwordInputIsNotHighlighted(): Promise<void> {
-        await expect(this.passwordInput).not.toHaveCSS("border-top-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).not.toHaveCSS("border-right-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).not.toHaveCSS("border-left-color", "rgb(247, 56, 89)");
-        await expect(this.passwordInput).not.toHaveCSS("border-bottom-color", "rgb(247, 56, 89)");
+        await expect(this.getPasswordInput()).not.toHaveCSS("border-color", "rgb(247, 56, 89)");
     }
 }

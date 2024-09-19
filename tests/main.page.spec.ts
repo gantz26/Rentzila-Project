@@ -4,25 +4,18 @@ import { ProductsPage } from '../pages/products.page.ts';
 import { UnitPage } from '../pages/unit.page.ts';
 import { faker } from "@faker-js/faker";
 import { AuthAPI } from '../utils/auth.api.ts';
-import { LoginPage } from '../pages/login.page.ts';
 
 test.describe("Main page", () => {
     let mainPage: MainPage;
     let productsPage: ProductsPage;
     let unitPage: UnitPage;
-    let loginPage: LoginPage;
     let request: APIRequestContext;
 
     test.beforeEach(async ({ page }) => {
         mainPage = new MainPage(page);
         productsPage = new ProductsPage(page);
         unitPage = new UnitPage(page);
-        loginPage = new LoginPage(page);
         await mainPage.open();
-
-        await loginPage.clickEnterButton();
-        await loginPage.login();
-        await loginPage.waitForAuthorizationFormIsHidden();
     });
 
     test("Checking \"Послуги\" section on the main page", async ({ page }) => {
@@ -93,35 +86,47 @@ test.describe("Main page", () => {
     test("Verify that all elements on the footer are displayed and all links are clickable", async ({ page }) => {
         await mainPage.closeTelegramPopup();
         await mainPage.scrollDownToFooter();
-        await expect(await mainPage.aboutUsLabel).toBeVisible();
-        await expect(await mainPage.privacyPolicy).toBeVisible();
-        await expect(await mainPage.cookiePolicy).toBeVisible();
-        await expect(await mainPage.termsConditions).toBeVisible();
-        await expect(await mainPage.forBuyersLabel).toBeVisible();
-        await expect(await mainPage.productLink).toBeVisible();
-        await expect(await mainPage.tendersLink).toBeVisible();
-        await expect(await mainPage.requestsLink).toBeVisible();
-        await expect(await mainPage.contactsLabel).toBeVisible();
-        await expect(await mainPage.emailLink).toBeVisible();
-        await expect(await mainPage.copyRight).toBeVisible();
+        await expect(await mainPage.getAboutUsLabel()).toBeVisible();
+        await expect(await mainPage.getPrivacyPolicy()).toBeVisible();
+        await expect(await mainPage.getCookiePolicy()).toBeVisible();
+        await expect(await mainPage.getTermsConditions()).toBeVisible();
+        await expect(await mainPage.getForBuyersLabel()).toBeVisible();
+        await expect(await mainPage.getProductLink()).toBeVisible();
+        await expect(await mainPage.getTendersLink()).toBeVisible();
+        await expect(await mainPage.getRequestsLink()).toBeVisible();
+        await expect(await mainPage.getContactsLabel()).toBeVisible();
+        await expect(await mainPage.getEmailLink()).toBeVisible();
+        await expect(await mainPage.getCopyRight()).toBeVisible();
 
         await mainPage.clickPrivacyPolicy();
+        await page.waitForURL("**/privacy-policy/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/privacy-policy/");
         await mainPage.scrollDownToFooter();
         await mainPage.clickCookiePolicy();
+        await page.waitForURL("**/cookie-policy/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/cookie-policy/");
         await mainPage.scrollDownToFooter();
         await mainPage.clickTermsConditions();
+        await page.waitForURL("**/terms-conditions/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/terms-conditions/");
         await mainPage.scrollDownToFooter();
 
         await mainPage.clickProductsLink();
+        await page.waitForURL("**/products/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/products");
         await mainPage.clickLogo();
         await mainPage.clickTendersLink();
+        await page.waitForURL("**/tenders-map/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/tenders-map/");
         await mainPage.clickLogo();
         await mainPage.clickRequestsLink();
+        await page.waitForURL("**/requests-map/", { waitUntil: "load" });
+        await expect(page.url()).toContain("/requests-map/");
         await mainPage.clickLogo();
     });
 
     test("Verify \"У Вас залишилися питання?\" form", async ({ page }) => {
-        await mainPage.scrollDownToConsultationform();
+        await mainPage.scrollDownToConsultationForm();
         await mainPage.closeTelegramPopup();
         await mainPage.clickOrderConsultationButton();
 

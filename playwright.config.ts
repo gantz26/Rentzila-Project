@@ -15,7 +15,7 @@ export default defineConfig({
     ["allure-playwright"]
   ],
   use: {
-    baseURL: 'https://dev.rentzila.com.ua',
+    baseURL: process.env.BASE_URL,
     trace: 'on-first-retry',
     video: {
       mode: "on"
