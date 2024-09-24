@@ -1,0 +1,22 @@
+{
+  "name": "rentzila",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "debug": "playwright test --debug",
+    "allure:serve": "allure serve allure-results"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.0.0",
+    "@playwright/test": "^1.47.0",
+    "@types/node": "^22.5.4",
+    "allure-commandline": "^2.30.0",
+    "allure-playwright": "^3.0.0-beta.12",
+    "dotenv": "^16.4.5"
+  }
+}
