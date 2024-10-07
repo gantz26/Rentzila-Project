@@ -2,11 +2,18 @@ import { test, expect } from '@playwright/test';
 import { MainPage } from '../pages/main.page.ts';
 import { LoginPage } from '../pages/login.page.ts';
 import { ProfilePage } from '../pages/profile.page.ts';
+import { faker } from '@faker-js/faker';
 
 test.describe("Authorization form", () => {
     let mainPage: MainPage;
     let loginPage: LoginPage;
     let profilePage: ProfilePage;
+
+    const EMPTY_FIELD_ERROR = "Поле не може бути порожнім";
+    const EMAIL_FORMAT_ERROR = "Неправильний формат email або номера телефону";
+    const SUCCESS_PHONE_VERIFICATION = "Успішно верифіковано";
+    const INVALID_EMAIL_OR_PASSWORD_ERROR = "Невірний e-mail або пароль";
+    const INVALID_PASSWORD_ERROR = "Пароль повинен містити як мінімум 1 цифру, 1 велику літеру і 1 малу літеру, також не повинен містити кирилицю та пробіли";
 
     test.beforeEach(async ({ page }) => {
         mainPage = new MainPage(page);
@@ -18,32 +25,32 @@ test.describe("Authorization form", () => {
     test("Authorization with empty fields", async ({ page }) => {
         await loginPage.clickEnterButton();
         await loginPage.clickLoginButton();
-        await page.waitForLoadState("networkidle");
+        await loginPage.getLogoContainer().waitFor({ state: "visible" });
         await expect(await loginPage.getAuthorizationForm()).toBeVisible();
         await expect(await loginPage.getEmailMessageError()).toBeVisible();
-        await expect(await loginPage.getEmailMessageError()).toHaveText("Поле не може бути порожнім");
+        await expect(await loginPage.getEmailMessageError()).toHaveText(EMPTY_FIELD_ERROR);
         await loginPage.emailInputIsHighlighted();
         await expect(await loginPage.getPasswordMessageError()).toBeVisible();
-        await expect(await loginPage.getPasswordMessageError()).toHaveText("Поле не може бути порожнім");
+        await expect(await loginPage.getPasswordMessageError()).toHaveText(EMPTY_FIELD_ERROR);
         await loginPage.passwordInputIsHighlighted();
 
         await loginPage.fillEmailInput(process.env.USER_EMAIL);
         await loginPage.clickLoginButton();
-        await page.waitForLoadState("networkidle");
+        await loginPage.getLogoContainer().waitFor({ state: "visible" });
         await expect(await loginPage.getAuthorizationForm()).toBeVisible();
         await loginPage.emailInputIsNotHighlighted();
         await expect(await loginPage.getPasswordMessageError()).toBeVisible();
-        await expect(await loginPage.getPasswordMessageError()).toHaveText("Поле не може бути порожнім");
+        await expect(await loginPage.getPasswordMessageError()).toHaveText(EMPTY_FIELD_ERROR);
         await loginPage.passwordInputIsHighlighted();
 
         await loginPage.clearEmailInput();
         await expect(await loginPage.getEmailMessageError()).toBeVisible();
-        await expect(await loginPage.getEmailMessageError()).toHaveText("Поле не може бути порожнім");
+        await expect(await loginPage.getEmailMessageError()).toHaveText(EMPTY_FIELD_ERROR);
         await loginPage.emailInputIsHighlighted();
 
         await loginPage.fillPasswordInput(process.env.USER_PASSWORD);
         await loginPage.clickLoginButton();
-        await page.waitForLoadState("networkidle");
+        await loginPage.getLogoContainer().waitFor({ state: "visible" });
         await expect(await loginPage.getAuthorizationForm()).toBeVisible();
         await loginPage.passwordInputIsNotHighlighted();
     });
@@ -117,7 +124,7 @@ test.describe("Authorization form", () => {
             await expect(await profilePage.getPhoneNumberInput()).toBeVisible();
             await expect(await profilePage.getPhoneNumberValue()).toContain(phone || "undefined");
             await expect(await profilePage.getPhoneVerificationLabel()).toBeVisible();
-            await expect(await profilePage.getPhoneVerificationLabel()).toHaveText("Успішно верифіковано");
+            await expect(await profilePage.getPhoneVerificationLabel()).toHaveText(SUCCESS_PHONE_VERIFICATION);
 
             await profilePage.clickLogout();
             await mainPage.isOpen();
@@ -133,25 +140,25 @@ test.describe("Authorization form", () => {
         await loginPage.passwordInputIsNotHighlighted();
 
         const invalidPhones = [
-            "991234785",
-            "099123478",
-            "+380-99-123-4785",
-            "+380 99 123 4785",
-            "+380(99)1234785",
-            "(99)1234785",
-            "09912347850",
-            "+100991234785",
-            "+0991234785"
+            faker.helpers.replaceSymbols("99#######"),
+            faker.helpers.replaceSymbols("099######"),
+            faker.helpers.replaceSymbols("+380-99-###-####"),
+            faker.helpers.replaceSymbols("+380 99 ### ####"),
+            faker.helpers.replaceSymbols("+380(99)#######"),
+            faker.helpers.replaceSymbols("(99)#######"),
+            faker.helpers.replaceSymbols("099########"),
+            faker.helpers.replaceSymbols("+10099#######"),
+            faker.helpers.replaceSymbols("+099#######")
         ];
 
         for (const invalidPhone of invalidPhones) {
             await loginPage.fillEmailInput(invalidPhone);
             await loginPage.clickLoginButton();
-            await page.waitForLoadState("networkidle");
+            await loginPage.getLogoContainer().waitFor({ state: "visible" });
             await expect(await loginPage.getAuthorizationForm()).toBeVisible();
             await loginPage.emailInputIsHighlighted();
             await expect(await loginPage.getEmailMessageError()).toBeVisible();
-            await expect(await loginPage.getEmailMessageError()).toHaveText("Неправильний формат email або номера телефону");
+            await expect(await loginPage.getEmailMessageError()).toHaveText(EMAIL_FORMAT_ERROR);
         }
     });
 
@@ -176,11 +183,11 @@ test.describe("Authorization form", () => {
         for (const invalidEmail of invalidEmails) {
             await loginPage.fillEmailInput(invalidEmail);
             await loginPage.clickLoginButton();
-            await page.waitForLoadState("networkidle");
+            await loginPage.getLogoContainer().waitFor({ state: "visible" });
             await expect(await loginPage.getAuthorizationForm()).toBeVisible();
             await loginPage.emailInputIsHighlighted();
             await expect(await loginPage.getEmailMessageError()).toBeVisible();
-            await expect(await loginPage.getEmailMessageError()).toHaveText("Неправильний формат email або номера телефону");
+            await expect(await loginPage.getEmailMessageError()).toHaveText(EMAIL_FORMAT_ERROR);
         }
     });
 
@@ -204,19 +211,17 @@ test.describe("Authorization form", () => {
             await loginPage.fillPasswordInput(invalidPassword);
             await loginPage.clickHiddenPasswordIcon();
             await loginPage.clickLoginButton();
-            await page.waitForLoadState("networkidle");
+            await loginPage.getLogoContainer().waitFor({ state: "visible" });
             await expect(await loginPage.getAuthorizationForm()).toBeVisible();
             if (invalidPassword === "Testuser13") {
                 await loginPage.passwordInputIsNotHighlighted();
                 await expect(await loginPage.getErrorMessage()).toBeVisible();
-                await expect(await loginPage.getErrorMessage()).toHaveText("Невірний e-mail або пароль");
+                await expect(await loginPage.getErrorMessage()).toHaveText(INVALID_EMAIL_OR_PASSWORD_ERROR);
             }
             else {
                 await loginPage.passwordInputIsHighlighted();
                 await expect(await loginPage.getPasswordMessageError()).toBeVisible();
-                await expect(await loginPage.getPasswordMessageError()).toHaveText(
-                    "Пароль повинен містити як мінімум 1 цифру, 1 велику літеру і 1 малу літеру, також не повинен містити кирилицю та пробіли"
-                );
+                await expect(await loginPage.getPasswordMessageError()).toHaveText(INVALID_PASSWORD_ERROR);
             }
         }
     });

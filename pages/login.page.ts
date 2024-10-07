@@ -11,6 +11,10 @@ export class LoginPage {
         return this.page.getByTestId("authorizationContainer");
     }
 
+    getLogoContainer(): Locator {
+        return this.page.locator("[class*=\"LogoContainer_logo_wrapper\"]");
+    }
+
     getErrorMessage(): Locator {
         return this.page.getByTestId("errorMessage");
     }
