@@ -19,6 +19,10 @@ export class MainPage {
         return this.page.getByRole("heading", { name: "Спецтехніка" });
     }
 
+    getAddAnnouncementButton(): Locator {
+        return this.page.locator("[class*=\"Navbar_addAnnouncement\"]");
+    }
+
     async getCategoriesButtons(): Promise<Locator[]> {
         return await this.page.locator("[class*=\"RentzilaProposes_container\"]").first().locator("[class^=\"RentzilaProposes_service\"]").all();
     }
@@ -148,6 +152,10 @@ export class MainPage {
     async clickOrderConsultationButton(): Promise<void> {
         await this.getOrderConsultationButton().waitFor({ state: "visible" });
         await this.getOrderConsultationButton().click();
+    }
+
+    async clickAddAnnouncementButton(): Promise<void> {
+        await this.getAddAnnouncementButton().click();
     }
 
     async clickPrivacyPolicy(): Promise<void> {
