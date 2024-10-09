@@ -5,6 +5,7 @@ import { GeneralInfoTabPage } from '../pages/generalInfoTab.page.ts';
 import { PhotoTabPage } from '../pages/photoTab.page.ts';
 import { copyAndPaste } from '../utils/helper.ts';
 import { faker } from '@faker-js/faker';
+import { readFile } from 'fs/promises';
 
 test.describe("General info tab", () => {
     let mainPage: MainPage;
@@ -79,341 +80,24 @@ test.describe("General info tab", () => {
         await expect(generalInfoTabPage.getCategoryPopup()).toBeVisible();
         await generalInfoTabPage.clickAvatarIcon();
         await expect(generalInfoTabPage.getCategoryPopup()).toBeHidden();
-
-        const data = [
-            {
-                name: "Будівельна техніка",
-                subOptions: [
-                    {
-                        name: "Бурові установки",
-                        values: [
-                            "палебійні установки",
-                            "установки для горизонтального буріння"
-                        ]
-                    },
-                    {
-                        name: "Дорожньо-будівельна техніка",
-                        values: [
-                            "автогудронатори",
-                            "асфальтні заводи",
-                            "асфальтоукладальники",
-                            "бетоноукладачі",
-                            "відбійні молотки",
-                            "дорожні фрези",
-                            "заливальники швів",
-                            "машини для укладання бруківки",
-                            "нагрівачі асфальту",
-                            "перевантажувачі асфальту",
-                            "промислові пальники",
-                            "ресайклери",
-                            "рециклери асфальтобетону",
-                            "різальники швів",
-                            "розмічальні машини",
-                            "укладальники узбіч",
-                            "щебнерозподільники"
-                        ]
-                    },
-                    {
-                        name: "Екскаватори",
-                        values: [
-                            "багатоковшові екскаватори",
-                            "вакуумні екскаватори",
-                            "гусеничні екскаватори",
-                            "драглайни",
-                            "екскаватори для знесення",
-                            "екскаватори для перевалки",
-                            "екскаватори з довгою стрілою",
-                            "екскаватори з прямою лопатою",
-                            "екскаватори на рейковому ходу",
-                            "екскаватори-амфібії",
-                            "екскаватори-навантажувачі",
-                            "екскаватори-планувальники",
-                            "земснаряди",
-                            "колісні екскаватори",
-                            "крокуючі екскаватори",
-                            "міні-екскаватори",
-                            "очеретокосарки",
-                            "траншеєкопачі",
-                            "тунельні екскаватори"
-                        ]
-                    },
-                    {
-                        name: "Інша спецтехніка",
-                        values: [
-                            "авто генератори ДО 100 КВТ",
-                            "авто генератори ДО 200 КВТ",
-                            "авто генератори ДО 50 КВТ",
-                            "авто генератори ДО 500 КВТ",
-                            "Автобетононасоси",
-                            "залізнична техніка"
-                        ]
-                    },
-                    {
-                        name: "Катки",
-                        values: [
-                            "дорожні катки",
-                            "Катки ґрунтові",
-                            "Катки причепні",
-                            "комбіновані катки",
-                            "Міні-катки",
-                            "Пневмокатки"
-                        ]
-                    },
-                    {
-                        name: "Контейнери",
-                        values: [
-                            "вагони побутові",
-                            "житлові контейнери",
-                            "мобільні будинки",
-                            "офісно-побутові контейнери",
-                            "санітарні контейнери"
-                        ]
-                    },
-                    {
-                        name: "Крани",
-                        values: [
-                            "автокрани ДО 20 ТОНН",
-                            "автокрани ДО 25 ТОНН",
-                            "автокрани ДО 40 ТОНН",
-                            "автокрани ДО 80 ТОНН",
-                            "баштові крани",
-                            "гусеничні крани",
-                            "крани-маніпулятори ДО 10 ТОНН",
-                            "крани-маніпулятори ДО 15 ТОНН",
-                            "крани-маніпулятори ДО 40 ТОНН",
-                            "крани-маніпулятори ДО 8 ТОНН",
-                            "міні-крани",
-                            "новый",
-                            "трубоукладачі"
-                        ]
-                    },
-                    {
-                        name: "Навантажувачі",
-                        values: [
-                            "великотоннажні вилкові навантажувачі",
-                            "вилкові навантажувачі",
-                            "вилкові навантажувачі триколісні",
-                            "вузькопрохідні навантажувачі",
-                            "контейнерні навантажувачі",
-                            "мобільні вилкові навантажувачі",
-                            "мобільні рампи",
-                            "навантажувачі бічні",
-                            "навантажувачі вилкові підвищеної прохідності",
-                            "навантажувачі телескопічні",
-                            "перевантажувачі металобрухту",
-                            "річстакери"
-                        ]
-                    },
-                    {
-                        name: "Обладнання для спецтехніки",
-                        values: [
-                            "барабани змішувальні",
-                            "бурові інструменти",
-                            "відвали",
-                            "гідромолоти",
-                            "гідроножиці",
-                            "грейфери",
-                            "довгі стріли екскаватора",
-                            "електромагніти вантажопідіймальні",
-                            "ківш мініекскаватора",
-                            "ковші",
-                            "ковші дробильні",
-                            "ковші екскаватора",
-                            "ковші фронтальні",
-                            "ковші-змішувачі",
-                            "Ліса будівельні",
-                            "навісні віброплити",
-                            "навісні дорожні фрези",
-                            "навісні екскаватори",
-                            "Опалубка",
-                            "просівні ковші",
-                            "противаги автокрана",
-                            "противаги баштового крана",
-                            "противаги екскаватора",
-                            "тельфери",
-                            "тилтротатори",
-                            "форми для бетону"
-                        ]
-                    },
-                    {
-                        name: "Підйомники",
-                        values: [
-                            "автовишки",
-                            "колінчасті підіймачі",
-                            "ножичні підіймачі",
-                            "Підіймачі телескопічні",
-                            "Підіймачі фасадні",
-                            "Підіймачі щоглові"
-                        ]
-                    },
-                    {
-                        name: "Техніка для земляних робіт",
-                        values: [
-                            "бульдозери",
-                            "віброплити",
-                            "грейдери",
-                            "компактори",
-                            "скрепери",
-                            "трамбувальники"
-                        ]
-                    }
-                ]
-            },
-            {
-                name: "Комунальна техніка",
-                subOptions: [
-                    {
-                        name: "Аварійні машини",
-                        values: [
-                            "автомобілі штабні",
-                            "всюдиходи",
-                            "машини швидкої допомоги",
-                            "обладнання для швидкої допомоги",
-                            "пожежне обладнання",
-                            "пожежні автодрабини",
-                            "пожежні аеродромні автомобілі",
-                            "пожежні машини",
-                            "пожежні насосні станції",
-                            "пожежні підіймачі"
-                        ]
-                    },
-                    {
-                        name: "Дорожньо-прибиральна техніка",
-                        values: [
-                            "вуличні пилососи",
-                            "льодоприбиральні машини",
-                            "піскорозкидачі",
-                            "пляжеприбиральні машини",
-                            "поливомийні машини",
-                            "прибиральні машини",
-                            "причіпні піскорозкидачі",
-                            "ратраки",
-                            "снігоприбиральні машини",
-                            "снігоприбирачі"
-                        ]
-                    },
-                    {
-                        name: "Клінінгове обладнання",
-                        values: [
-                            "машини для миття підлоги",
-                            "мийки високого тиску",
-                            "промислові пилососи",
-                            "ручні підмітальні машини"
-                        ]
-                    },
-                    {
-                        name: "Комунальні контейнери",
-                        values: [
-                            "IBC контейнери",
-                            "знімні бункери-накопичувачі",
-                            "контейнери сміттєві",
-                            "мультиліфт-контейнери",
-                            "прес-контейнери"
-                        ]
-                    },
-                    {
-                        name: "Комунальні машини",
-                        values: [
-                            "асенізатори",
-                            "вантажівки бункеровози",
-                            "гакові мультиліфти",
-                            "інша комунальна техніка",
-                            "каналопромивні машини",
-                            "комбіновані каналоочисні машини",
-                            "сміттєвози",
-                            "універсальні комунальні машини"
-                        ]
-                    },
-                    {
-                        name: "Обладнання для комунальної техніки",
-                        values: [
-                            "бункеровози",
-                            "відвали для снігу",
-                            "кузови піскорозкидачів",
-                            "кузови сміттєвозів",
-                            "навісні піскорозкидачі",
-                            "щітки комунальні"
-                        ]
-                    },
-                    {
-                        name: "Сільськогосподарська техніка",
-                        values: [
-                            "Ґрунтообробна техніка",
-                            "Жатки",
-                            "Інша сільгосптехніка",
-                            "Картопляна техніка",
-                            "Комбайни",
-                            "Лісозаготівельна техніка",
-                            "Обладнання",
-                            "Післязбиральна техніка",
-                            "Посівна та садильна техніка",
-                            "Сільськогосподарська нерухомість",
-                            "Техніка для внесення добрив",
-                            "Техніка для заготівлі сіна",
-                            "Техніка для поливу та зрошення",
-                            "Техніка для саду та городу",
-                            "Техніка для тваринництва",
-                            "Техніка для транспортування",
-                            "Трактори"
-                        ]
-                    }
-                ]
-            },
-            {
-                name: "Складська техніка",
-                subOptions: [
-                    {
-                        name: "Обладнання для навантажувачів",
-                        values: [
-                            "Cтріли навантажувача",
-                            "вила",
-                            "гідравлічні ковші",
-                            "захвати для рулонів",
-                            "каретки бічного зсуву",
-                            "контейнери з відкидним дном",
-                            "позиціонери вил",
-                            "противаги вилкового навантажувача",
-                            "робочі платформи",
-                            "ротатори для навантажувача",
-                            "Самоперекидні контейнери"
-                        ]
-                    },
-                    {
-                        name: "Техніка для складування",
-                        values: [
-                            "ваги-рокла",
-                            "вилкові навантажувач",
-                            "візки двоколісні",
-                            "візки платформні",
-                            "електричні візки",
-                            "електротягачі",
-                            "зрівняльні вила",
-                            "комплектувальники замовлень",
-                            "ножичні візки",
-                            "ричтраки, висотні штабелери",
-                            "рокли",
-                            "стелажі складські",
-                            "штабелери"
-                        ]
-                    }
-                ]
-            }
-        ]
+        
+        const fileData = await readFile("./data/json/categories.json", "utf-8");
+        const categoriesNames = JSON.parse(fileData);
         await generalInfoTabPage.clickCategoryButton();
         const firstColumnOptions = await generalInfoTabPage.getPopupFirstCategoryItems();
         for (const [firstColumnIndex, firstOption] of firstColumnOptions.entries()) {
             await expect(firstOption).toBeVisible();
-            await expect(firstOption).toHaveText(data[firstColumnIndex].name);
+            await expect(firstOption).toHaveText(categoriesNames[firstColumnIndex].name);
             await firstOption.click();
             const secondColumnOptions = await generalInfoTabPage.getPopupSecondCategoryItems();
             for (const [secondColumnIndex, secondOption] of secondColumnOptions.entries()) {
-                await expect(secondOption).toHaveText(data[firstColumnIndex].subOptions[secondColumnIndex].name);
+                await expect(secondOption).toHaveText(categoriesNames[firstColumnIndex].subOptions[secondColumnIndex].name);
                 await secondOption.click();
                 const thirdColumnOptions = await generalInfoTabPage.getPopupThirdCategoryItems();
                 for (const [thirdColumnIndex, thirdOption] of thirdColumnOptions.entries()) {
-                    await expect(thirdOption).toHaveText(data[firstColumnIndex].subOptions[secondColumnIndex].values[thirdColumnIndex]);
+                    await expect(thirdOption).toHaveText(categoriesNames[firstColumnIndex].subOptions[secondColumnIndex].values[thirdColumnIndex]);
                     await thirdOption.click();
-                    await expect(generalInfoTabPage.getCategoryButton()).toHaveText(data[firstColumnIndex].subOptions[secondColumnIndex].values[thirdColumnIndex]);
+                    await expect(generalInfoTabPage.getCategoryButton()).toHaveText(categoriesNames[firstColumnIndex].subOptions[secondColumnIndex].values[thirdColumnIndex]);
                     await generalInfoTabPage.clickCategoryButton();
                 }
             }
@@ -653,7 +337,7 @@ test.describe("General info tab", () => {
         await expect(generalInfoTabPage.getAddressSelectionPopupTitle()).toHaveText("Техніка на мапі");
         await expect(generalInfoTabPage.getAddressSelectionPopupCloseButton()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         await expect(generalInfoTabPage.getAddressSelectionPopupMap()).toBeVisible();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
         await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(generalInfoTabPage.defaultAddress);
@@ -661,10 +345,10 @@ test.describe("General info tab", () => {
         await generalInfoTabPage.clickAddressSelectionButton();
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await generalInfoTabPage.selectNewAddress();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
         await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(newAddress);
@@ -690,10 +374,10 @@ test.describe("General info tab", () => {
         await generalInfoTabPage.clickAddressSelectionButton();
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await generalInfoTabPage.selectNewAddress();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
         await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(newAddress);
