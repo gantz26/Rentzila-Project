@@ -3,7 +3,7 @@ name: Rentzila tests
 on:
   push:
     branches:
-      - "main"
+      - main
 
   pull_request:
     branches:
