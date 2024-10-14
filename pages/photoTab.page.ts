@@ -80,6 +80,6 @@ export class PhotoTabPage {
         const fileChooserPromise = this.page.waitForEvent('filechooser');
         await this.getAddImageButton(imageBlock).click();
         const fileChooser = await fileChooserPromise;
-        await fileChooser.setFiles(pathToFile);
+        await fileChooser.setFiles(pathToFile, { timeout: 1000 });
     }
 }

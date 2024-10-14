@@ -344,9 +344,9 @@ test.describe("General info tab", () => {
 
         await generalInfoTabPage.clickAddressSelectionButton();
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
+        await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
-        await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await generalInfoTabPage.selectNewAddress();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
@@ -373,9 +373,9 @@ test.describe("General info tab", () => {
         await generalInfoTabPage.selectManifacturer();
         await generalInfoTabPage.clickAddressSelectionButton();
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
+        await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
-        await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await generalInfoTabPage.selectNewAddress();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
