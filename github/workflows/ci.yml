@@ -1,13 +1,13 @@
 name: Rentzila tests
 
 on:
+  push:
+    branches:
+      - "*"
+
   pull_request:
     branches:
       - main
-
-  push:
-    branches:
-      - "**"
 
 jobs:
   build-and-run:
