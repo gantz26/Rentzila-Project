@@ -2,34 +2,9 @@ import { Locator, Page, expect } from "@playwright/test";
 
 export class GeneralInfoTabPage {
     private readonly page: Page;
-    readonly defaultAddress: string;
-    readonly tabTitles: Array<{number: string, name: string}>;
 
     constructor(page: Page) {
         this.page = page;
-        this.defaultAddress = "Київ, вулиця Володимирська 21/20 Україна, Київська область";
-        this.tabTitles = [
-            {
-                number: "1",
-                name: "Основна інформація"
-            },
-            {
-                number: "2",
-                name: "Фотографії"
-            },
-            {
-                number: "3",
-                name: "Послуги"
-            },
-            {
-                number: "4",
-                name: "Вартість"
-            },
-            {
-                number: "5",
-                name: "Контакти"
-            }
-        ];
     }
 
     async isOpen(): Promise<void> {

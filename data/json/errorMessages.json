@@ -1,0 +1,5 @@
+{
+    "REQUIRED_FIELD_ERROR_MESSAGE": "Це поле обов’язкове",
+    "LESS_THAN_10_SYMBOLS_ERROR_MESSAGE": "У назві оголошення повинно бути не менше 10 символів",
+    "MORE_THAN_100_SYMBOLS_ERROR_MESSAGE": "У назві оголошення може бути не більше 100 символів"
+}

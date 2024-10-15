@@ -6,16 +6,14 @@ import { PhotoTabPage } from '../pages/photoTab.page.ts';
 import { copyAndPaste } from '../utils/helper.ts';
 import { faker } from '@faker-js/faker';
 import { readFile } from 'fs/promises';
+import errorMessages from '../data/json/errorMessages.json';
+import generalInfoTabData from '../data/json/generalInfoTabData.json';
 
 test.describe("General info tab", () => {
     let mainPage: MainPage;
     let loginPage: LoginPage;
     let generalInfoTabPage: GeneralInfoTabPage;
     let photoTabPage: PhotoTabPage;
-
-    const REQUIRED_FIELD_ERROR_MESSAGE = "Це поле обов’язкове";
-    const LESS_THAN_10_SYMBOLS_ERROR_MESSAGE = "У назві оголошення повинно бути не менше 10 символів";
-    const MORE_THAN_100_SYMBOLS_ERROR_MESSAGE = "У назві оголошення може бути не більше 100 символів";
 
     test.beforeEach(async ({ page }) => {
         mainPage = new MainPage(page);
@@ -43,9 +41,9 @@ test.describe("General info tab", () => {
         const tabs = await generalInfoTabPage.getTabs();
         for (const [index, tab] of tabs.entries()) {
             await expect(generalInfoTabPage.getTabNumber(tab)).toBeVisible();
-            await expect(generalInfoTabPage.getTabNumber(tab)).toHaveText(generalInfoTabPage.tabTitles[index].number);
+            await expect(generalInfoTabPage.getTabNumber(tab)).toHaveText(generalInfoTabData.tabTitles[index].number);
             await expect(generalInfoTabPage.getTabName(tab)).toBeVisible();
-            await expect(generalInfoTabPage.getTabName(tab)).toHaveText(generalInfoTabPage.tabTitles[index].name);
+            await expect(generalInfoTabPage.getTabName(tab)).toHaveText(generalInfoTabData.tabTitles[index].name);
             if (index === 0) {
                 await expect(tab).toHaveAttribute("aria-selected", "true");
             }
@@ -65,7 +63,7 @@ test.describe("General info tab", () => {
         await generalInfoTabPage.clickNextButton();
         await generalInfoTabPage.categoryButtonIsHighlighted();
         await expect(generalInfoTabPage.getCategoryErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getCategoryErrorMessage()).toHaveText(REQUIRED_FIELD_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getCategoryErrorMessage()).toHaveText(errorMessages.REQUIRED_FIELD_ERROR_MESSAGE);
         await generalInfoTabPage.categoryErrorMessageIsRed();
 
         await generalInfoTabPage.clickCategoryButton();
@@ -112,20 +110,20 @@ test.describe("General info tab", () => {
 
         await generalInfoTabPage.clickNextButton();
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(REQUIRED_FIELD_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.REQUIRED_FIELD_ERROR_MESSAGE);
         await generalInfoTabPage.announcementErrorMessageIsRed();
         await generalInfoTabPage.announcementInputIsHighlighted();
 
         await generalInfoTabPage.fillAnnouncementInput("123456789");
         await generalInfoTabPage.clickNextButton();
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(LESS_THAN_10_SYMBOLS_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.LESS_THAN_10_SYMBOLS_ERROR_MESSAGE);
         await generalInfoTabPage.announcementErrorMessageIsRed();
         await generalInfoTabPage.announcementInputIsHighlighted();
         await generalInfoTabPage.clearAnnouncementInput();
         await copyAndPaste(page, generalInfoTabPage.getAnnouncementInput(), "123456789");
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(LESS_THAN_10_SYMBOLS_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.LESS_THAN_10_SYMBOLS_ERROR_MESSAGE);
         await generalInfoTabPage.announcementErrorMessageIsRed();
         await generalInfoTabPage.announcementInputIsHighlighted();
 
@@ -133,16 +131,16 @@ test.describe("General info tab", () => {
         const text = 'a'.repeat(101);
         await generalInfoTabPage.fillAnnouncementInput(text);
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(MORE_THAN_100_SYMBOLS_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.MORE_THAN_100_SYMBOLS_ERROR_MESSAGE);
         await generalInfoTabPage.clickNextButton();
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(REQUIRED_FIELD_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.REQUIRED_FIELD_ERROR_MESSAGE);
         await generalInfoTabPage.announcementErrorMessageIsRed();
         await generalInfoTabPage.announcementInputIsHighlighted();
         await generalInfoTabPage.clearAnnouncementInput();
         await copyAndPaste(page, generalInfoTabPage.getAnnouncementInput(), text);
         await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(MORE_THAN_100_SYMBOLS_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getAnnouncementErrorMessage()).toHaveText(errorMessages.MORE_THAN_100_SYMBOLS_ERROR_MESSAGE);
         await generalInfoTabPage.announcementErrorMessageIsRed();
         await generalInfoTabPage.announcementInputIsHighlighted();
 
@@ -170,7 +168,7 @@ test.describe("General info tab", () => {
 
         await generalInfoTabPage.clickNextButton();
         await expect(generalInfoTabPage.getManufacturerErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getManufacturerErrorMessage()).toHaveText(REQUIRED_FIELD_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getManufacturerErrorMessage()).toHaveText(errorMessages.REQUIRED_FIELD_ERROR_MESSAGE);
         await generalInfoTabPage.manufacturerErrorMessageIsRed();
         await generalInfoTabPage.manufacturerInputIsHighlighted();
 
@@ -221,7 +219,7 @@ test.describe("General info tab", () => {
         await generalInfoTabPage.fillManufacturerInput(text);
         await generalInfoTabPage.clickNextButton();
         await expect(generalInfoTabPage.getManufacturerErrorMessage()).toBeVisible();
-        await expect(generalInfoTabPage.getManufacturerErrorMessage()).toHaveText(REQUIRED_FIELD_ERROR_MESSAGE);
+        await expect(generalInfoTabPage.getManufacturerErrorMessage()).toHaveText(errorMessages.REQUIRED_FIELD_ERROR_MESSAGE);
         await generalInfoTabPage.manufacturerErrorMessageIsRed();
         await generalInfoTabPage.manufacturerInputIsHighlighted();
         expect((await generalInfoTabPage.getManufacturerInput().inputValue()).length).toEqual(100);
@@ -337,18 +335,18 @@ test.describe("General info tab", () => {
         await expect(generalInfoTabPage.getAddressSelectionPopupTitle()).toHaveText("Техніка на мапі");
         await expect(generalInfoTabPage.getAddressSelectionPopupCloseButton()).toBeVisible();
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabData.defaultAddress, { timeout: 10000 });
         await expect(generalInfoTabPage.getAddressSelectionPopupMap()).toBeVisible();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
-        await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(generalInfoTabPage.defaultAddress);
+        await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(generalInfoTabData.defaultAddress);
 
         await generalInfoTabPage.clickAddressSelectionButton();
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
         await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabData.defaultAddress, { timeout: 10000 });
         await generalInfoTabPage.selectNewAddress();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabData.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
         await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(newAddress);
@@ -375,9 +373,9 @@ test.describe("General info tab", () => {
         await expect(generalInfoTabPage.getAddressSelectionPopup()).toBeVisible();
         await generalInfoTabPage.getAddressSelectionPopupMap().waitFor({ state: "visible" });
         await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toBeVisible();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).toHaveText(generalInfoTabData.defaultAddress, { timeout: 10000 });
         await generalInfoTabPage.selectNewAddress();
-        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabPage.defaultAddress, { timeout: 10000 });
+        await expect(generalInfoTabPage.getAddressSelectionPopupAddressLine()).not.toHaveText(generalInfoTabData.defaultAddress, { timeout: 10000 });
         const newAddress = await generalInfoTabPage.getAddressSelectionPopupAddressLine().innerText();
         await generalInfoTabPage.clickAddressSelectionPopupApproveButton();
         await expect(generalInfoTabPage.getAddressSelectionLabel()).toHaveText(newAddress);
