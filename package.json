@@ -5,7 +5,8 @@
   "scripts": {
     "test": "playwright test",
     "debug": "playwright test --debug",
-    "allure:serve": "allure serve allure-results"
+    "allure:generate": "allure generate --clean",
+    "allure:open": "allure open"
   },
   "keywords": [],
   "author": "",
