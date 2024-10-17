@@ -1,0 +1,85 @@
+name: Rentzila tests
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create the .env file
+        run: |
+          echo ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} > .env
+          echo ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} >> .env
+          echo USER_EMAIL=${{ secrets.USER_EMAIL }} >> .env
+          echo USER_PASSWORD=${{ secrets.USER_PASSWORD }} >> .env
+          echo USER_PHONE=${{ secrets.USER_PHONE }} >> .env
+          echo TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }} >> .env
+          echo TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }} >> .env
+          echo BASE_URL=${{ secrets.BASE_URL }} >> .env
+
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+  deploy:
+    needs: build-and-run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Allure results
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Get allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Get allure report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
