@@ -4,8 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:main": "playwright test main.page.spec.ts",
+    "test:login": "playwright test login.spec.ts",
+    "test:generalInfoTab": "playwright test generalInfoTab.spec.ts",
+    "test:photoTab": "playwright test photoTab.spec.ts",
     "debug": "playwright test --debug",
-    "allure:serve": "allure serve allure-results"
+    "allure:generate": "allure generate --clean",
+    "allure:open": "allure open"
   },
   "keywords": [],
   "author": "",
