@@ -8,6 +8,7 @@
     "test:login": "playwright test login.spec.ts",
     "test:generalInfoTab": "playwright test generalInfoTab.spec.ts",
     "test:photoTab": "playwright test photoTab.spec.ts",
+    "test:priceTab": "playwright test priceTab.spec.ts",
     "debug": "playwright test --debug",
     "allure:generate": "allure generate --clean",
     "allure:open": "allure open"

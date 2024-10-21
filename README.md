@@ -46,6 +46,7 @@ npm run test:main
 npm run test:login
 npm run test:generalInfoTab
 npm run test:photoTab
+npm run test:priceTab
 ```
 
 6. To generate and open a report:
