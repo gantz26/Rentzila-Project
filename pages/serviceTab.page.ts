@@ -102,6 +102,10 @@ export class ServiceTabPage {
         await this.getSelectedServiceDeleteButton(item).click();
     }
 
+    async clearServiceInput(): Promise<void> {
+        await this.getServiceInput().clear();
+    }
+
     async selectService(): Promise<string> {
         const characters = "abcdefghijklmnopqrstuvwxyz";
         let randomIndex = Math.floor(Math.random() * characters.length);
