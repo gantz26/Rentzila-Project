@@ -39,8 +39,32 @@ export class ServiceTabPage {
         return await this.getServiceDropdownList().getByTestId("searchItem-servicesUnitFlow").all();
     }
 
+    async getServiceDropdownListItemText(item: Locator): Promise<string> {
+        return await item.innerText();
+    }
+
+    getServiceDropdownListItemPlusIcon(item: Locator): Locator {
+        return item.getByTestId("unitServicesButton").locator("svg[width=\"14\"][height=\"14\"]");
+    }
+
+    getServiceDropdownListItemCheckIcon(item: Locator): Locator {
+        return item.getByTestId("unitServicesButton").locator("svg[width=\"15\"][height=\"12\"]");
+    }
+
+    getCreateServiceButton(): Locator {
+        return this.getServiceDropdownList().getByTestId("btn-addNewItem");
+    }
+
+    getCreateServiceButtonPlusIcon(): Locator {
+        return this.getCreateServiceButton().getByTestId("svg-plus-addNewItem");
+    }
+
     getSelectedServicesDescription(): Locator {
-        return this.page.locator("[class*=\"ServicesUnitFlow_paragraph\"]").last();
+        return this.page.getByText("Послуги, які надає технічний засіб:");
+    }
+
+    getSelectedServiceDeleteButton(item: Locator): Locator {
+        return item.getByTestId("remove-servicesUnitFlow");
     }
 
     async getSelectedServices(): Promise<Locator[]> {
@@ -70,6 +94,14 @@ export class ServiceTabPage {
         await this.getServiceInput().fill(text);
     }
 
+    async clickCreateServiceButton(): Promise<void> {
+        await this.getCreateServiceButton().click();
+    }
+
+    async clickSelectedServiceDeleteButton(item: Locator): Promise<void> {
+        await this.getSelectedServiceDeleteButton(item).click();
+    }
+
     async selectService(): Promise<string> {
         const characters = "abcdefghijklmnopqrstuvwxyz";
         let randomIndex = Math.floor(Math.random() * characters.length);
@@ -80,7 +112,7 @@ export class ServiceTabPage {
         expect(dropdownListItems.length).toBeGreaterThan(0);
         randomIndex = Math.floor(Math.random() * dropdownListItems.length);
         const selectedItem = dropdownListItems[randomIndex];
-        const selectedItemText = await selectedItem.innerText();
+        const selectedItemText = await this.getServiceDropdownListItemText(selectedItem);
         await expect(selectedItem).toBeVisible();
         await selectedItem.click();
         await expect(this.getSelectedServicesDescription()).toBeVisible();

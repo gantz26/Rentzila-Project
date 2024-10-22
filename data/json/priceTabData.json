@@ -1,0 +1,14 @@
+{
+    "SERVICE_PRICE_DESCRIPTION_TEXT": "За бажанням Ви можете додати вартість конкретних послуг, які надає технічний засіб",
+    "ADD_BUTTON_TEXT": "Додати вартість",
+    "REQUIRED_FIELD_ERROR_MESSAGE": "Це поле обов’язкове",
+    "ACTUAL_TEXT": "1234567890",
+    "EXPECTED_TEXT": "123456789",
+    "INVALID_VALUES": [
+        "123 456",
+        "123456 ",
+        " ",
+        "abc ",
+        "!@#$%.,"
+    ]
+}
